@@ -1,15 +1,13 @@
-# PHP test
+After reviewing the code, here are some bad practices and improvements:
 
-## 1. Installation
+Violation of Single Responsibility Principle: NewsManager class is responsible for managing news, connecting to the database, and handling comments. It's better to separate these responsibilities.
 
-  - create an empty database named "phptest" on your MySQL server
-  - import the dbdump.sql in the "phptest" database
-  - put your MySQL server credentials in the constructor of DB class
-  - you can test the demo script in your shell: "php index.php"
+Lack of encapsulation: The constructor directly requires utility classes and News class. It's better to use dependency injection.
 
-## 2. Expectations
+Mixed responsibility of CommentManager: CommentManager should only handle comments, not listing them in NewsManager.
 
-This simple application works, but with very old-style monolithic codebase, so do anything you want with it, to make it:
+Lack of input validation: addNews() does not validate the input, making it vulnerable to SQL injection.
 
-  - easier to work with
-  - more maintainable
+Mixed use of object-oriented and procedural code: The code mixes object-oriented programming (OOP) and procedural programming, making it harder to maintain and understand.
+
+Lack of namespaces and Composer: Not using namespaces and Composer makes it harder to manage dependencies and autoloading.
