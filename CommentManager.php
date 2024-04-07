@@ -1,53 +1,29 @@
 <?php
 
-class CommentManager
-{
-	private static $instance = null;
+// CommentManager class
+class CommentManager {
+    private $db;
 
-	private function __construct()
-	{
-		require_once(ROOT . '/utils/DB.php');
-		require_once(ROOT . '/class/Comment.php');
-	}
+    public function __construct() {
+        $this->db = new DB();
+    }
 
-	public static function getInstance()
-	{
-		if (null === self::$instance) {
-			$c = __CLASS__;
-			self::$instance = new $c;
-		}
-		return self::$instance;
-	}
+    public function getCommentsByNewsId($news_id) {
+        $sql = "SELECT * FROM comment WHERE news_id = :news_id";
+        $params = [':news_id' => $news_id];
+        $stmt = $this->db->query($sql, $params);
+        $results = $stmt->fetchAll(PDO::FETCH_CLASS, 'Comment');
+        return $results;
+    }
 
-	public function listComments()
-	{
-		$db = DB::getInstance();
-		$rows = $db->select('SELECT * FROM `comment`');
-
-		$comments = [];
-		foreach($rows as $row) {
-			$n = new Comment();
-			$comments[] = $n->setId($row['id'])
-			  ->setBody($row['body'])
-			  ->setCreatedAt($row['created_at'])
-			  ->setNewsId($row['news_id']);
-		}
-
-		return $comments;
-	}
-
-	public function addCommentForNews($body, $newsId)
-	{
-		$db = DB::getInstance();
-		$sql = "INSERT INTO `comment` (`body`, `created_at`, `news_id`) VALUES('". $body . "','" . date('Y-m-d') . "','" . $newsId . "')";
-		$db->exec($sql);
-		return $db->lastInsertId($sql);
-	}
-
-	public function deleteComment($id)
-	{
-		$db = DB::getInstance();
-		$sql = "DELETE FROM `comment` WHERE `id`=" . $id;
-		return $db->exec($sql);
-	}
+    public function addComment(string $body, int $newsId) {
+        $createdAt = date('Y-m-d H:i:s');
+        $sql = "INSERT INTO comment (body, created_at, news_id) VALUES (:body, :created_at, :news_id)";
+        $params = [
+            ':body' => $body,
+            ':created_at' => $createdAt,
+            ':news_id' => $newsId,
+        ];
+        $this->db->query($sql, $params);
+    }
 }

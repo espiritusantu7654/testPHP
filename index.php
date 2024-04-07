@@ -1,18 +1,28 @@
 <?php
 
-define('ROOT', __DIR__);
-require_once(ROOT . '/utils/NewsManager.php');
-require_once(ROOT . '/utils/CommentManager.php');
+require_once 'newsmanager.php';
+require_once 'commentmanager.php';
+require_once 'news.php';
+require_once 'comment.php';
 
-foreach (NewsManager::getInstance()->listNews() as $news) {
-	echo("############ NEWS " . $news->getTitle() . " ############\n");
-	echo($news->getBody() . "\n");
-	foreach (CommentManager::getInstance()->listComments() as $comment) {
-		if ($comment->getNewsId() == $news->getId()) {
-			echo("Comment " . $comment->getId() . " : " . $comment->getBody() . "\n");
-		}
-	}
+$newsManager = new NewsManager();
+$commentManager = new CommentManager();
+
+// Get all news
+$news = $newsManager->getNews();
+foreach ($news as $new) {
+    echo "News title: " . $new->getTitle() . PHP_EOL;
+    echo "News body: " . $new->getBody() . PHP_EOL;
+    echo "News created at: " . $new->getCreatedAt()->format('Y-m-d H:i:s') . PHP_EOL;
+
+    // Get comments by news id
+    $comments = $commentManager->getCommentsByNewsId($new->getId());
+    foreach ($comments as $comment) {
+        echo "Comment body: " . $comment->getBody() . PHP_EOL;
+        echo "Comment created at: " . $comment->getCreatedAt()->format('Y-m-d H:i:s') . PHP_EOL;
+    }
+    echo PHP_EOL;
 }
 
-$commentManager = CommentManager::getInstance();
-$c = $commentManager->listComments();
+// Add new news
+$newsManager->addNews('New News Title', 'This is the new news body.');

@@ -1,42 +1,23 @@
 <?php
 
-class DB
-{
-	private $pdo;
+// Database configuration
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'phptest');
+define('DB_USER', 'root');
+define('DB_PASS', 'password');
 
-	private static $instance = null;
+// Database class
+class DB {
+    private $conn;
 
-	private function __construct()
-	{
-		$dsn = 'mysql:dbname=phptest;host=127.0.0.1';
-		$user = 'root';
-		$password = 'pass';
+    public function __construct() {
+        $this->conn = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+        $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
 
-		$this->pdo = new \PDO($dsn, $user, $password);
-	}
-
-	public static function getInstance()
-	{
-		if (null === self::$instance) {
-			$c = __CLASS__;
-			self::$instance = new $c;
-		}
-		return self::$instance;
-	}
-
-	public function select($sql)
-	{
-		$sth = $this->pdo->query($sql);
-		return $sth->fetchAll();
-	}
-
-	public function exec($sql)
-	{
-		return $this->pdo->exec($sql);
-	}
-
-	public function lastInsertId()
-	{
-		return $this->pdo->lastInsertId();
-	}
+    public function query($sql, $params = []) {
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
+    }
 }

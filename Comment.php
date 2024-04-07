@@ -1,53 +1,32 @@
 <?php
 
-class Comment
-{
-	protected $id, $body, $createdAt, $newsId;
+// Comment class
+class Comment {
+    private $id;
+    private $body;
+    private $createdAt;
+    private $newsId;
 
-	public function setId($id)
-	{
-		$this->id = $id;
+    public function __construct($id, $body, $createdAt, $newsId) {
+        $this->id = $id;
+        $this->body = $body;
+        $this->createdAt = new DateTime($createdAt);
+        $this->newsId = $newsId;
+    }
 
-		return $this;
-	}
+    public function getId() {
+        return $this->id;
+    }
 
-	public function getId()
-	{
-		return $this->id;
-	}
-	public function setBody($body)
-	{
-		$this->body = $body;
+    public function getBody() {
+        return $this->body;
+    }
 
-		return $this;
-	}
+    public function getCreatedAt() {
+        return $this->createdAt;
+    }
 
-	public function getBody()
-	{
-		return $this->body;
-	}
-
-	public function setCreatedAt($createdAt)
-	{
-		$this->createdAt = $createdAt;
-
-		return $this;
-	}
-
-	public function getCreatedAt()
-	{
-		return $this->createdAt;
-	}
-
-	public function getNewsId()
-	{
-		return $this->newsId;
-	}
-
-	public function setNewsId($newsId)
-	{
-		$this->newsId = $newsId;
-
-		return $this;
-	}
+    public function getNewsId() {
+        return $this->newsId;
+    }
 }
